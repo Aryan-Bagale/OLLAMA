@@ -12,8 +12,8 @@ url = "http://localhost:11434/api/generate"
 
 # Define the data (JSON payload) to send in the POST request
 data = {
-    "model": "deepseek-r1",   # Name of the AI model to use
-    "prompt": "1+ 1"          # The user input or prompt to send to the model
+    "model": "deepseek-r1:1.5b",   # Name of the AI model to use
+    "prompt": "tell me a short story and make it funny."          # The user input or prompt to send to the model
 }
 
 # Send a POST request to the REST API with the specified URL and data

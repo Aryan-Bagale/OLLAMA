@@ -10,7 +10,7 @@ response = ollama.list()  # Lists all models installed in your Ollama environmen
 # 📌 2. Chat example (non-streaming)
 # ================================
 res = ollama.chat(
-    model="deepseek-r1",  # Changed from 'llama3.2' to 'deepseek-r1'
+    model="deepseek-r1:1.5b",  # Changed from 'llama3.2' to 'deepseek-r1'
     messages=[
         {"role": "user", "content": "why is the sky blue?"},  # User message
     ],
