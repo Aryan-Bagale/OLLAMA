@@ -1,31 +1,44 @@
-def chat_with_model(prompt):
-    from openai import OpenAI  # ✅ required for using the OpenAI client interface
+# We can run DeepSeek R1 locally using Ollama. Ollama gives us an endpoint we can talk to. Instead of using OpenAI’s cloud API,
+# we point our code to this local endpoint. This way, we use the same code patterns but with local, open-source models.
 
-    # Create a client for interacting with a locally hosted Ollama model
+
+# Import the OpenAI SDK (used here to connect with the local Ollama server)
+from openai import OpenAI
+
+# Define a function that takes user input (prompt) and sends it to the model
+def chat_with_model(prompt):
+    # Create a client to talk to the local Ollama server
+    # Note: The OpenAI SDK needs an api_key, but for Ollama we just pass a dummy value
     client = OpenAI(
-        api_key="ollama",  # dummy value; required by SDK but unused for Ollama
-        base_url="http://localhost:11434/v1/"  # point to local Ollama server
+        api_key="ollama",  # not used, but required by the SDK
+        base_url="http://localhost:11434/v1"  # this must match your running Ollama server
     )
 
-    # Define the chat messages
+    # Define the messages to send to the model
+    # 'system' sets the behavior of the assistant
+    # 'user' is the actual question or command given by you
     messages = [
-        {"role": "system", "content": "You are a helpful assistant."},  # fixed typo in 'assistant'
-        {"role": "user", "content": prompt }
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": prompt}  # use the user's actual input here
     ]
 
-    # Try streaming a response
     try:
+        # Send the messages to the model and request a streaming response
         response = client.chat.completions.create(
-            model="deepseek-r1:1.5b",  # model must exist in your local Ollama
+            model="deepseek-r1:1.5b",  # Make sure this model is available locally via Ollama
             messages=messages,
-            stream=True,
+            stream=True,  # receive response in chunks as it's being generated
         )
 
+        # Loop through each chunk as it comes and print it immediately
         for chunk in response:
-            if chunk.choices[0].delta.content:  # safe check for streaming content
-                print(chunk.choices[0].delta.content, end="", flush=True)
+            content = chunk.choices[0].delta.content
+            if content:  # make sure there is something to print
+                print(content, end="", flush=True)  # print without newline
 
     except Exception as e:
+        # If something goes wrong (e.g., model not found or server not running), print the error
         print(f"\n❌ Error: {e}")
 
-chat_with_model(input("Type Here: "))
+# Ask the user for input and send it to the function
+chat_with_model(input("Type here: "))
